@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rename Sample Names</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Rename Sample Names</h2>
+
+        <form method="POST">
+            {% for name in sample_names %}
+                <div class="form-group">
+                    <label for="rename_{{ name }}">New Name for {{ name }}:</label>
+                    <input type="text" class="form-control" id="rename_{{ name }}" name="rename_{{ name }}" placeholder="Enter new name">
+
+                    <!-- 选择框：选择当前输入的新名称作为 base_name -->
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="base_name_{{ name }}" name="base_name" value="{{ name }}">
+                        <label class="form-check-label" for="base_name_{{ name }}">Use this as base name</label>
+                    </div>
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

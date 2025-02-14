@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download CSV</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+
+        <h3 class="mt-4">Download the CSV File:</h3>
+        <a href="{{ url_for('download', file_name=file_name) }}" class="btn btn-primary">Download</a>
+
+        <h3 class="mt-5">Gene Expression Bar Charts</h3>
+        <div class="row">
+            {% for img_data in img_data_list %}
+            <div class="col-md-6">
+                <img src="data:image/png;base64,{{ img_data }}" class="img-fluid" alt="Gene Expression Chart">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

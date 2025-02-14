@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Data</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* 自定义样式，用于增强间隔线效果 */
+        hr {
+            border: 0;
+            border-top: 2px solid #ddd;
+            margin: 20px 0;
+            width: 100%;
+        }
+        .section-header {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .row-segment {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-column {
+            width: 45%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Process Data</h1>
+
+        <h3>Gene Name:</h3>
+        <p>{{ column_names | join(', ') }}</p>  <!-- 显示 DataFrame 的表头，逐个元素打印，使用逗号分隔 -->
+
+        <form method="POST">
+            <div class="row-segment">
+                <!-- 左侧部分：输入 Internal Reference -->
+                <div class="form-column">
+                    <h3 class="section-header">Enter Internal Reference:</h3>
+                    <div class="form-group">
+                        <label for="internal_reference">Internal Reference:</label>
+                        <input type="text" class="form-control" id="internal_reference" name="internal_reference" required
+                               list="column_names_list" placeholder="Start typing..." title="Please enter one of the following column names: {{ column_names | join(', ') }}">
+                        <datalist id="column_names_list">
+                            {% for name in column_names %}
+                                <option value="{{ name }}">{{ name }}</option>
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                </div>
+
+                <!-- 右侧部分：输入 Target Genes -->
+                <div class="form-column">
+                    <h3 class="section-header">Enter Target Genes:</h3>
+                    <div class="form-group">
+                        <label for="target_gene_1">Target Gene 1:</label>
+                        <input type="text" class="form-control" id="target_gene_1" name="target_gene_1"
+                               list="column_names_list" placeholder="Start typing..." title="Please enter one of the following column names: {{ column_names | join(', ') }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="target_gene_2">Target Gene 2:</label>
+                        <input type="text" class="form-control" id="target_gene_2" name="target_gene_2"
+                               list="column_names_list" placeholder="Start typing..." title="Please enter one of the following column names: {{ column_names | join(', ') }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="target_gene_3">Target Gene 3:</label>
+                        <input type="text" class="form-control" id="target_gene_3" name="target_gene_3"
+                               list="column_names_list" placeholder="Start typing..." title="Please enter one of the following column names: {{ column_names | join(', ') }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="target_gene_4">Target Gene 4:</label>
+                        <input type="text" class="form-control" id="target_gene_4" name="target_gene_4"
+                               list="column_names_list" placeholder="Start typing..." title="Please enter one of the following column names: {{ column_names | join(', ') }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="target_gene_5">Target Gene 5:</label>
+                        <input type="text" class="form-control" id="target_gene_5" name="target_gene_5"
+                               list="column_names_list" placeholder="Start typing..." title="Please enter one of the following column names: {{ column_names | join(', ') }}">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        // Optional: Enhance the input experience, providing real-time suggestions
+        $('input[list="column_names_list"]').on('input', function() {
+            var inputVal = $(this).val().toLowerCase();
+            $(this).siblings('datalist').find('option').each(function() {
+                var optionText = $(this).text().toLowerCase();
+                if (optionText.indexOf(inputVal) === -1) {
+                    $(this).hide();  // Hide options that don't match
+                } else {
+                    $(this).show();  // Show options that match
+                }
+            });
+        });
+    </script>
+</body>
+</html>
