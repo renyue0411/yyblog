@@ -4,10 +4,12 @@ import io
 from werkzeug.utils import secure_filename
 import pandas as pd
 from datetime import datetime
+import matplotlib
 import matplotlib.pyplot as plt
 import base64
 
 app = Flask(__name__)
+matplotlib.use('Agg')  # 使用非交互式后端
 
 # 配置上传文件夹和允许的文件类型
 UPLOAD_FOLDER = './'
@@ -33,6 +35,10 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/', methods=['GET', 'POST'])
+def index():
+    return render_template('index.html')
+
+@app.route('/upload', methods=['GET', 'POST'])
 def upload_files():
     if request.method == 'POST':
         if 'files' not in request.files:
@@ -53,6 +59,7 @@ def upload_files():
                 return f"Error: Invalid file type ({file.filename}). Only TXT and CSV are allowed.", 400
 
         if saved_files:
+            print(f'file list: {saved_files}')
             # 使用列表推导式读取所有文件
             dfs = [pd.read_csv(file_name, sep="\t") for file_name in saved_files]
             # 合并所有数据
@@ -67,6 +74,11 @@ def upload_files():
             # 将 DataFrame 转换为 CSV 格式存储在 session 中
             csv_data = df.to_csv(index=False)
             session['df'] = csv_data  # 存储在 session 中
+
+            for del_file in saved_files:
+                # 文件处理后立即删除
+                os.remove(del_file)  # 提取数据后删除文件
+
             return redirect(url_for('input_gene'))
         else:
             return "Error: No valid files uploaded", 400
@@ -215,11 +227,24 @@ def rename_samples():
                 img_data_list.append(img_data)
                 plt.close(fig)  # 关闭图像，防止内存占用
 
+            # 删除当前文件夹下所有csv文件 获取当前工作目录
+            current_directory = os.getcwd()
+            # 遍历当前目录下的所有文件
+            for filename in os.listdir(current_directory):
+                if filename.endswith('.csv'):
+                    file_path = os.path.join(current_directory, filename)
+                    try:
+                        # 删除文件
+                        os.remove(file_path)
+                        print(f"Deleted: {file_path}")
+                    except Exception as e:
+                        print(f"Error deleting file {file_path}: {e}")
 
             # 获取当前日期
             current_date = datetime.now().strftime("%Y%m%d")
             # 生成文件名
             file_name = f"{current_date}_{'_'.join(ori_gene_list)}.csv"
+            # file_name = f"output.csv"
 
             # 创建并写入 CSV 文件
             with open(file_name, mode='w', newline='') as f:
@@ -244,6 +269,10 @@ def rename_samples():
 
 @app.route('/download/<file_name>')
 def download(file_name):
+    file_path = os.path.join(UPLOAD_FOLDER, file_name)
+    # 检查文件是否存在
+    if not os.path.exists(file_path):
+        return render_template('error.html', error_message="ERROR: File not found!")
     # 返回文件供用户下载
     return send_file(file_name, as_attachment=True, download_name=file_name)
 

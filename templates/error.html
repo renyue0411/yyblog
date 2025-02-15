@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../static/images/icon.png" type="image/x-icon">
+    <title>Error</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background-color: #f9f5f0;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        a.btn {
+            display: inline-block;
+            text-align: center;
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        a.btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="error-message">
+        <p>{{ error_message }}</p>
+    </div>
+
+    <a href="/" class="btn">Go Back to Home</a>
+
+</body>
+</html>

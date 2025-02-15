@@ -3,28 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../static/images/icon.png" type="image/x-icon">
     <title>Rename Sample Names</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background-color: #f9f5f0;
+            color: #333;
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 40px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-top: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+        }
+        .navbar .logo {
+            width: 80px; /* 设置 logo 的大小 */
+        }
+        .navbar a {
+            text-decoration: none;
+            color: #333;
+            margin: 0 20px;
+            font-size: 25px;
+            padding: 8px 12px;
+            transition: all 0.3s;
+        }
+        .navbar a:hover {
+            color: #ff7a59;
+            border-bottom: 2px solid #ff7a59;
+        }
+        h2 {
+            font-size: 30px;
+            font-weight: bold;
+            text-align: center; /* 保证文本在 h1 中右对齐 */
+        }
+        .form-group {
+            width: 50%; /* 或者其他的百分比值 */
+            margin: 0 auto; /* 自动水平居中 */
+        }
+        .center-button {
+            display: block;
+            margin: 20px auto; /* 上下 20px，左右 auto 使其水平居中 */
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>Rename Sample Names</h2>
+    <nav class="navbar">
+        <img src="../static/images/logo.png" alt="Logo" class="logo" width="80">
+        <a href="/">HOME</a>
+        <a href="/upload">TOOLS</a>
+        <a href="#">LIFE</a>
+        <a href="#">YUE&YAO</a>
+    </nav>
+<div class="container mt-5">
+    <h2>Rename Samples Name</h2>
 
-        <form method="POST">
-            {% for name in sample_names %}
-                <div class="form-group">
-                    <label for="rename_{{ name }}">New Name for {{ name }}:</label>
-                    <input type="text" class="form-control" id="rename_{{ name }}" name="rename_{{ name }}" placeholder="Enter new name">
+    <form method="POST" onsubmit="return validateForm()">
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>Sample Name</th>
+                    <th>New Name</th>
+                    <th style="width: 200px;">Set as Base Value</th> <!-- 设置宽度 -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for name in sample_names %}
+                <tr>
+                    <td>{{ name }}</td>
+                    <td>
+                        <input type="text" class="form-control" id="rename_{{ name }}" name="rename_{{ name }}" placeholder="Enter new name" required>
+                    </td>
+                    <td>
+                        <div class="form-check d-flex">
+                            <input type="radio" class="form-check-input" id="base_name_{{ name }}" name="base_name" value="{{ name }}" required>
+                            <label class="form-check-label" for="base_name_{{ name }}" style="margin-left: 8px;">Yes</label>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary center-button">SUBMIT</button>
+    </form>
+</div>
 
-                    <!-- 选择框：选择当前输入的新名称作为 base_name -->
-                    <div class="form-check">
-                        <input type="radio" class="form-check-input" id="base_name_{{ name }}" name="base_name" value="{{ name }}">
-                        <label class="form-check-label" for="base_name_{{ name }}">Use this as base name</label>
-                    </div>
-                </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
+    <script>
+        // 校验表单，确保选择了一个 base_name
+        function validateForm() {
+            let baseNameSelected = false;
+            const radioButtons = document.getElementsByName("base_name");
+            // 获取所有的输入框
+            const inputs = document.querySelectorAll('input[type="text"]');
+            // 表单验证，确保 New Name 字段不能为空
+            for (let i = 0; i < inputs.length; i++) {
+                if (inputs[i].value.trim() === '') {  // 检查是否为空
+                    alert('Please fill in all the "New Name" fields.');
+                    return false;  // 阻止表单提交
+                }
+            }
+            // 检查是否选择了 base_name
+            for (let i = 0; i < radioButtons.length; i++) {
+                if (radioButtons[i].checked) {
+                    baseNameSelected = true;
+                    break;
+                }
+            }
+
+            // 如果没有选择任何 base_name，阻止表单提交并显示提示
+            if (!baseNameSelected) {
+                alert("Please select one option as the base name.");
+                return false; // 阻止表单提交
+            }
+            return true;
+        }
+    </script>
 </body>
 </html>
