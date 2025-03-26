@@ -65,7 +65,7 @@ def upload_files():
             # 合并所有数据
             df = pd.concat(dfs, ignore_index=True)
             # 删除不需要的行
-            df = df[df['Sample Name'].str.match(r'^[0-9]-')]
+            df = df[df['Sample Name'].str.match(r'^[0-9]')]
             # 保留Sample Name和Concentration Mean数据
             df = df.pivot_table(index='Sample Name', columns='Gene Name', values='Concentration Mean')
             # 重置索引，确保Sample Name成为列而不是索引
@@ -117,9 +117,9 @@ def input_gene():
                 # 创建新列 target_gene/internal_gene
                 df[i + '/' + internal_reference] = df[i] / df[internal_reference]
             # 添加Round列，根据Sample Name中的数字分配Round
-            df['Round'] = df['Sample Name'].str.extract(r'(\d)-')[0].astype(int)
+            df['Round'] = df['Sample Name'].str.extract(r'(\d)')[0].astype(int)
             # 修改Sample Name列：去掉数字前缀并替换指定值
-            df['Sample Name'] = df['Sample Name'].str.replace(r'(^\d-)', '', regex=True)  # 只去除数字前缀
+            df['Sample Name'] = df['Sample Name'].str.replace(r'(^\d)', '', regex=True)  # 只去除数字前缀
 
             # 将 DataFrame 转换为 CSV 格式存储在 session 中
             csv_data = df.to_csv(index=False)
