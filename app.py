@@ -66,6 +66,8 @@ def upload_files():
             df = pd.concat(dfs, ignore_index=True)
             # 删除不需要的行
             df = df[df['Sample Name'].str.match(r'^[0-9]')]
+            # 删除 Concentration Mean 列中值为 '-' 的行
+            df = df[df['Concentration Mean'] != "-"]
             # 保留Sample Name和Concentration Mean数据
             df = df.pivot_table(index='Sample Name', columns='Gene Name', values='Concentration Mean')
             # 重置索引，确保Sample Name成为列而不是索引
