@@ -18,17 +18,39 @@ ALLOWED_EXTENSIONS = {'txt', 'csv'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # 必须设置 secret_key 才能使用 session
 app.secret_key = 'mpquic'
+# def calculate_fold_change(target_gene, processed_gene_list, internal_reference, group, control_sample):
+#     for gene_name in target_gene:
+#         name = gene_name + '/' + internal_reference
+#         if name not in processed_gene_list:
+#             processed_gene_list.append(name)
+#         control_value = group.loc[group['Sample Name'] == control_sample, name].values[0]
+#         # 计算Fold Change
+#         changed_name = 'Flod Change ' + name
+#         if changed_name not in processed_gene_list:
+#             processed_gene_list.append(changed_name)
+#         group[changed_name] = group[name] / control_value
+#     return group
 def calculate_fold_change(target_gene, processed_gene_list, internal_reference, group, control_sample):
     for gene_name in target_gene:
         name = gene_name + '/' + internal_reference
         if name not in processed_gene_list:
             processed_gene_list.append(name)
-        control_value = group.loc[group['Sample Name'] == control_sample, name].values[0]
-        # 计算Fold Change
-        changed_name = 'Flod Change ' + name
+
+        # 检查是否找到 control_sample 和对应的基因值
+        control_value = group.loc[group['Sample Name'] == control_sample, name].values
+        if len(control_value) == 0:
+            print(f"Warning: Control sample '{control_sample}' not found for gene '{name}'. Skipping this gene.")
+            continue  # 如果找不到 control_sample，就跳过当前基因的计算
+
+        control_value = control_value[0]  # 获取第一个匹配的值
+
+        # 计算 Fold Change
+        changed_name = 'Fold Change ' + name  # 修改了你的注释错误，"Flod Change" 应该是 "Fold Change"
         if changed_name not in processed_gene_list:
             processed_gene_list.append(changed_name)
-        group[changed_name] = group[name] / control_value
+
+        group[changed_name] = group[name] / control_value  # 计算 Fold Change
+
     return group
 def allowed_file(filename):
     """检查文件扩展名是否允许"""
